@@ -30,25 +30,22 @@ public class Element {
         return value;
     }
 
+    public boolean isPossible(Integer value) {
+        return !row.contains(value) && !column.contains(value)
+                && !block.contains(value);
+    }
+
     public boolean setValue(Integer value) {
-        if (row.contains(value)) {
+        if (!isPossible(value)) {
             return false;
-        }
+        } else {
+            this.value = value;
+            row.add(value);
+            column.add(value);
+            block.add(value);
 
-        if (column.contains(value)) {
-            return false;
+            return true;
         }
-
-        if (block.contains(value)) {
-            return false;
-        }
-
-        this.value = value;
-        row.add(value);
-        column.add(value);
-        block.add(value);
-        
-        return true;
     }
 
     public boolean reset() {
@@ -57,7 +54,7 @@ public class Element {
             column.remove(value);
             block.remove(value);
             value = 0;
-            
+
             return true;
         } else {
             return false;
