@@ -5,7 +5,7 @@
  */
 package sudoku;
 
-import java.util.ArrayList;
+import java.util.TreeSet;
 
 /**
  *
@@ -13,10 +13,10 @@ import java.util.ArrayList;
  */
 public class Container {
 
-    private final ArrayList<Integer> elements;
+    private final TreeSet<Integer> elements;
 
     public Container() {
-        elements = new ArrayList<>();
+        elements = new TreeSet<>();
     }
 
     public boolean add(Integer element) {
