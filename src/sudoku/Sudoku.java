@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Sudoku {
 
-    private final Element [][] table;
+    private final ArrayList<ArrayList<Element>> grid;
     private final Container[] rows;
     private final Container[] columns;
     private final Container[] blocks;
@@ -21,82 +21,104 @@ public class Sudoku {
     private final Possibilities[][] possible;
     private static final int SIZE = 9;
     //private static final int LENGTH = SIZE * SIZE;
-    
-    public Sudoku(int [][] vals) {
+
+    public Sudoku(int[][] vals) {
         empty = new ArrayList<>();
-        possible = new Possibilities[SIZE][SIZE];
-        table = new Element[SIZE][];
-        
-        for (int i = 0; i < SIZE; ++i) {
-            table[i] = new Element[SIZE];
-            
-            for (int j = 0; j < SIZE; ++j) {
-                table[i][j] = new Element(vals[i][j]);
-                
-                if (vals[i][j] == 0) {
-                    empty.add(new Coordinates(i, j));
-                }
-            }
-        }
-        
+        possible = new Possibilities[SIZE][];
+        grid = new ArrayList<>();
         rows = new Container[SIZE];
-        
+
         for (int i = 0; i < SIZE; ++i) {
             rows[i] = new Container();
-            
+
             for (int j = 0; j < SIZE; ++j) {
-                if(rows[i].add(table[i][j].getValue())) {
-                    
-                } else {
-                    throw new UnsupportedOperationException();
-                }
-            }
-        }
-        
-        columns = new Container[SIZE];
-        
-        for (int i = 0; i < SIZE; ++i) {
-            columns[i] = new Container();
-            
-            for (int j = 0; j < SIZE; ++j) {
-                if (columns[i].add(table[j][i].getValue())) {
-                    
-                } else {
-                    throw new UnsupportedOperationException();
-                }
-            }
-        }
-        
-        blocks = new Container[SIZE];
-        
-        for (int i = 0; i < SIZE; ++i) {
-            blocks[i] = new Container();
-            
-            int r_start = (i / 3) * 3;
-            int r_end = r_start + 3;
-            int c_start = (i % 3) * 3;
-            int c_end = c_start + 3;
-            
-            for (int m = r_start; m < r_end; ++m) {
-                for (int n = c_start; n < c_end; ++n) {
-                    if (blocks[i].add(table[m][n].getValue())) {
-                        
+                int value = vals[i][j];
+
+                if (value != 0) {
+                    if (rows[i].add(value)) {
+
                     } else {
                         throw new UnsupportedOperationException();
                     }
                 }
             }
         }
+
+        columns = new Container[SIZE];
+
+        for (int j = 0; j < SIZE; ++j) {
+            columns[j] = new Container();
+
+            for (int i = 0; i < SIZE; ++i) {
+                int value = vals[i][j];
+
+                if (value != 0) {
+                    if (columns[j].add(value)) {
+
+                    } else {
+                        throw new UnsupportedOperationException();
+                    }
+                }
+            }
+        }
+
+        blocks = new Container[SIZE];
+
+        for (int i = 0; i < SIZE; ++i) {
+            blocks[i] = new Container();
+
+            int r_start = (i / 3) * 3;
+            int r_end = r_start + 3;
+            int c_start = (i % 3) * 3;
+            int c_end = c_start + 3;
+
+            for (int m = r_start; m < r_end; ++m) {
+                for (int n = c_start; n < c_end; ++n) {
+                    int value = vals[m][n];
+
+                    if (value != 0) {
+                        if (blocks[i].add(value)) {
+
+                        } else {
+                            throw new UnsupportedOperationException();
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (int i = 0; i < SIZE; ++i) {
+            grid.add(new ArrayList<>());
+
+            for (int j = 0; j < SIZE; ++j) {
+                Element elem = new Element(
+                        vals[i][j], 
+                        rows[i], 
+                        columns[j], 
+                        blocks[(i/3) * 3 + j/3]
+                );
+                
+                grid.get(i).add(elem);
+
+                if (vals[i][j] == 0) {
+                    empty.add(new Coordinates(i, j));
+                }
+            }
+        }
         
         initializePossible();
     }
-    
+
     public final void initializePossible() {
         for (int i = 0; i < SIZE; ++i) {
+            possible[i] = new Possibilities[SIZE];
+            
             for (int j = 0; j < SIZE; ++j) {
-                if (table[i][j].getValue() == 0) {
+                possible[i][j] = new Possibilities();
+                
+                if (grid.get(i).get(j).getValue() == 0) {
                     for (int k = 1; k < 10; ++k) {
-                        if (table[i][j].isPossible(k)) {
+                        if (grid.get(i).get(j).isPossible(k)) {
                             possible[i][j].add(k);
                         }
                     }
@@ -107,27 +129,35 @@ public class Sudoku {
 
     @Override
     public String toString() {
-        return "Sudoku{" + "table=" + table + '}';
+        String res = "Sudoku{" + "grid={\n";
+
+        for (int i = 0; i < SIZE; ++i) {
+            res += grid.get(i) + "\n";
+        }
+
+        res += "}\n";
+
+        return res;
     }
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        int [][] values = {
-            {0, 0, 0,   1, 0, 5,    0, 0, 0},
-            {1, 4, 0,   0, 0, 0,    6, 7, 0},
-            {0, 8, 0,   0, 0, 2,    4, 0, 0},
-            {0, 6, 3,   0, 7, 0,    0, 1, 0},
-            {9, 0, 0,   0, 0, 0,    0, 0, 3},
-            {0, 1, 0,   0, 9, 0,    5, 2, 0},
-            {0, 0, 7,   2, 0, 0,    0, 8, 0},
-            {0, 2, 6,   0, 0, 0,    0, 3, 5},
-            {0, 0, 0,   4, 0, 9,    0, 0, 0}
+        int[][] values = {
+            {0, 0, 0, 1, 0, 5, 0, 0, 0},
+            {1, 4, 0, 0, 0, 0, 6, 7, 0},
+            {0, 8, 0, 0, 0, 2, 4, 0, 0},
+            {0, 6, 3, 0, 7, 0, 0, 1, 0},
+            {9, 0, 0, 0, 0, 0, 0, 0, 3},
+            {0, 1, 0, 0, 9, 0, 5, 2, 0},
+            {0, 0, 7, 2, 0, 0, 0, 8, 0},
+            {0, 2, 6, 0, 0, 0, 0, 3, 5},
+            {0, 0, 0, 4, 0, 9, 0, 0, 0}
         };
-        
+
         Sudoku sdk = new Sudoku(values);
         System.out.println("sdk = " + sdk);
     }
-    
+
 }
