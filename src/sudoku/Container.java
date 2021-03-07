@@ -40,4 +40,9 @@ public class Container {
     public boolean contains(Integer element) {
         return elements.contains(element);
     }
+
+    @Override
+    public String toString() {
+        return "Container{" + "elements=" + elements + '}';
+    }
 }
