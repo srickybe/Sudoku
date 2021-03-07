@@ -21,4 +21,9 @@ public class Possibilities {
     public void add(int poss) {
         possible.add(poss);
     }
+
+    @Override
+    public String toString() {
+        return "Possibilities{" + "possible=" + possible + '}';
+    }
 }

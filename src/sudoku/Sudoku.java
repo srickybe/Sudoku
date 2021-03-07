@@ -87,9 +87,11 @@ public class Sudoku {
                 }
             }
         }
+        
+        initializePossible();
     }
     
-    public void initializePossible() {
+    public final void initializePossible() {
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
                 if (table[i][j].getValue() == 0) {
@@ -102,36 +104,30 @@ public class Sudoku {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Sudoku{" + "table=" + table + '}';
+    }
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        class Value {
-            public int i;
-            
-            Value (int i) {
-                this.i = i;
-            }
-            
-            void set(int i) {
-                this.i = i;
-            }
-
-            @Override
-            public String toString() {
-                return "Value{" + "i=" + i + '}';
-            }
-        }
+        int [][] values = {
+            {0, 0, 0,   1, 0, 5,    0, 0, 0},
+            {1, 4, 0,   0, 0, 0,    6, 7, 0},
+            {0, 8, 0,   0, 0, 2,    4, 0, 0},
+            {0, 6, 3,   0, 7, 0,    0, 1, 0},
+            {9, 0, 0,   0, 0, 0,    0, 0, 3},
+            {0, 1, 0,   0, 9, 0,    5, 2, 0},
+            {0, 0, 7,   2, 0, 0,    0, 8, 0},
+            {0, 2, 6,   0, 0, 0,    0, 3, 5},
+            {0, 0, 0,   4, 0, 9,    0, 0, 0}
+        };
         
-        Value i1 = new Value(9);
-        Value i2 = i1;
-        System.out.println("i1 = " + i1);
-        System.out.println("i2 = " + i2);
-        i1.set(10);
-        System.out.println("i1 = " + i1);
-        System.out.println("i2 = " + i2);
+        Sudoku sdk = new Sudoku(values);
+        System.out.println("sdk = " + sdk);
     }
     
 }
