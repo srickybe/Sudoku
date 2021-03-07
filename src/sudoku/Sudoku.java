@@ -5,6 +5,8 @@
  */
 package sudoku;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Ricky
@@ -15,17 +17,25 @@ public class Sudoku {
     private final Container[] rows;
     private final Container[] columns;
     private final Container[] blocks;
+    private final ArrayList<Coordinates> empty;
+    private final Possibilities[][] possible;
     private static final int SIZE = 9;
-    private static final int LENGTH = SIZE * SIZE;
+    //private static final int LENGTH = SIZE * SIZE;
     
     public Sudoku(int [][] vals) {
-        table = new Element[LENGTH][];
+        empty = new ArrayList<>();
+        possible = new Possibilities[SIZE][SIZE];
+        table = new Element[SIZE][];
         
-        for (int i = 0; i < LENGTH; ++i) {
+        for (int i = 0; i < SIZE; ++i) {
             table[i] = new Element[SIZE];
             
             for (int j = 0; j < SIZE; ++j) {
                 table[i][j] = new Element(vals[i][j]);
+                
+                if (vals[i][j] == 0) {
+                    empty.add(new Coordinates(i, j));
+                }
             }
         }
         
@@ -79,6 +89,19 @@ public class Sudoku {
         }
     }
     
+    public void initializePossible() {
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if (table[i][j].getValue() == 0) {
+                    for (int k = 1; k < 10; ++k) {
+                        if (table[i][j].isPossible(k)) {
+                            possible[i][j].add(k);
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     /**
      * @param args the command line arguments
