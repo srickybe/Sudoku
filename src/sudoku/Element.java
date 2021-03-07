@@ -18,8 +18,15 @@ public class Element {
     private Container column;
     private Container block;
 
-    public Element(Integer value) {
+    public Element(
+            Integer value, 
+            Container row, 
+            Container column, 
+            Container block) {
         this.value = value;
+        this.row = row;
+        this.column = column;
+        this.block = block;
     }
 
     public Element() {
