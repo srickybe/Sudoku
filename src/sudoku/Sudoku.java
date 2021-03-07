@@ -139,7 +139,7 @@ public class Sudoku {
         }
 
         res += "}" + "\nrows={" + rows + "\ncolumns={" + columns + "\nblocks={"
-                + blocks + "\n}";
+                + blocks + "\nempty={" + empty + "\npossible={" + possible + "\n}";
 
         return res;
     }
