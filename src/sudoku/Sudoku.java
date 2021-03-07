@@ -91,7 +91,8 @@ public class Sudoku {
 
             for (int j = 0; j < SIZE; ++j) {
                 Element elem = new Element(
-                        vals[i][j], 
+                        vals[i][j],
+                        vals[i][j] == 0,
                         rows.get(i), 
                         columns.get(j), 
                         blocks.get((i/3) * 3 + j/3)
