@@ -13,17 +13,35 @@ import java.util.Objects;
  */
 public class Element {
 
+    private static final int SIZE = 9;
     private Integer value;
+    private boolean mutable;
     private Container row;
     private Container column;
     private Container block;
 
     public Element(
-            Integer value, 
-            Container row, 
-            Container column, 
+            Integer value,
+            boolean mutable,
+            Container row,
+            Container column,
             Container block) {
+        if (value == 0) {
+            if (!mutable) {
+                throw new UnsupportedOperationException();
+            }
+        } else {
+            if (value > 0 && value <= SIZE) {
+                if (mutable) {
+                    throw new UnsupportedOperationException();
+                }
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+
         this.value = value;
+        this.mutable = mutable;
         this.row = row;
         this.column = column;
         this.block = block;
@@ -38,31 +56,39 @@ public class Element {
     }
 
     public boolean isPossible(Integer value) {
-        return !row.contains(value) && !column.contains(value)
+        return mutable && !row.contains(value) && !column.contains(value)
                 && !block.contains(value);
     }
 
     public boolean setValue(Integer value) {
-        if (!isPossible(value)) {
-            return false;
-        } else {
-            this.value = value;
-            row.add(value);
-            column.add(value);
-            block.add(value);
+        if (mutable) {
+            if (!isPossible(value)) {
+                return false;
+            } else {
+                this.value = value;
+                row.add(value);
+                column.add(value);
+                block.add(value);
 
-            return true;
+                return true;
+            }
+        } else {
+            return false;
         }
     }
 
     public boolean reset() {
-        if (value != 0) {
-            row.remove(value);
-            column.remove(value);
-            block.remove(value);
-            value = 0;
+        if (mutable) {
+            if (value != 0) {
+                row.remove(value);
+                column.remove(value);
+                block.remove(value);
+                value = 0;
 
-            return true;
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
