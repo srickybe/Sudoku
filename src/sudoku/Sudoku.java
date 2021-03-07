@@ -14,28 +14,27 @@ import java.util.ArrayList;
 public class Sudoku {
 
     private final ArrayList<ArrayList<Element>> grid;
-    private final Container[] rows;
-    private final Container[] columns;
-    private final Container[] blocks;
+    private final ArrayList<Container> rows;
+    private final ArrayList<Container> columns;
+    private final ArrayList<Container> blocks;
     private final ArrayList<Coordinates> empty;
-    private final Possibilities[][] possible;
+    private final ArrayList<ArrayList<Possibilities>> possible;
     private static final int SIZE = 9;
-    //private static final int LENGTH = SIZE * SIZE;
 
     public Sudoku(int[][] vals) {
         empty = new ArrayList<>();
-        possible = new Possibilities[SIZE][];
+        possible = new ArrayList<>();
         grid = new ArrayList<>();
-        rows = new Container[SIZE];
+        rows = new ArrayList<>();
 
         for (int i = 0; i < SIZE; ++i) {
-            rows[i] = new Container();
+            rows.add(new Container());
 
             for (int j = 0; j < SIZE; ++j) {
                 int value = vals[i][j];
 
                 if (value != 0) {
-                    if (rows[i].add(value)) {
+                    if (rows.get(i).add(value)) {
 
                     } else {
                         throw new UnsupportedOperationException();
@@ -44,16 +43,16 @@ public class Sudoku {
             }
         }
 
-        columns = new Container[SIZE];
+        columns = new ArrayList<>();
 
         for (int j = 0; j < SIZE; ++j) {
-            columns[j] = new Container();
+            columns.add(new Container());
 
             for (int i = 0; i < SIZE; ++i) {
                 int value = vals[i][j];
 
                 if (value != 0) {
-                    if (columns[j].add(value)) {
+                    if (columns.get(j).add(value)) {
 
                     } else {
                         throw new UnsupportedOperationException();
@@ -62,10 +61,10 @@ public class Sudoku {
             }
         }
 
-        blocks = new Container[SIZE];
+        blocks = new ArrayList<>();
 
         for (int i = 0; i < SIZE; ++i) {
-            blocks[i] = new Container();
+            blocks.add(new Container());
 
             int r_start = (i / 3) * 3;
             int r_end = r_start + 3;
@@ -77,7 +76,7 @@ public class Sudoku {
                     int value = vals[m][n];
 
                     if (value != 0) {
-                        if (blocks[i].add(value)) {
+                        if (blocks.get(i).add(value)) {
 
                         } else {
                             throw new UnsupportedOperationException();
@@ -93,9 +92,9 @@ public class Sudoku {
             for (int j = 0; j < SIZE; ++j) {
                 Element elem = new Element(
                         vals[i][j], 
-                        rows[i], 
-                        columns[j], 
-                        blocks[(i/3) * 3 + j/3]
+                        rows.get(i), 
+                        columns.get(j), 
+                        blocks.get((i/3) * 3 + j/3)
                 );
                 
                 grid.get(i).add(elem);
@@ -110,16 +109,20 @@ public class Sudoku {
     }
 
     public final void initializePossible() {
-        for (int i = 0; i < SIZE; ++i) {
-            possible[i] = new Possibilities[SIZE];
+        for (int i = 0; i < SIZE; ++i){
+            possible.add(new ArrayList<>());
             
             for (int j = 0; j < SIZE; ++j) {
-                possible[i][j] = new Possibilities();
-                
+                possible.get(i).add(new Possibilities());
+            }
+        }
+        
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
                 if (grid.get(i).get(j).getValue() == 0) {
                     for (int k = 1; k < 10; ++k) {
                         if (grid.get(i).get(j).isPossible(k)) {
-                            possible[i][j].add(k);
+                            possible.get(i).get(j).add(k);
                         }
                     }
                 }
@@ -135,7 +138,8 @@ public class Sudoku {
             res += grid.get(i) + "\n";
         }
 
-        res += "}\n";
+        res += "}" + "\nrows={" + rows + "\ncolumns={" + columns + "\nblocks={"
+                + blocks + "\n}";
 
         return res;
     }
@@ -159,5 +163,4 @@ public class Sudoku {
         Sudoku sdk = new Sudoku(values);
         System.out.println("sdk = " + sdk);
     }
-
 }
