@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Sudoku {
 
-    private final ArrayList<ArrayList<Element>> grid;
+    private final ArrayList<ArrayList<Cell>> grid;
     private final ArrayList<Container> rows;
     private final ArrayList<Container> columns;
     private final ArrayList<Container> blocks;
@@ -90,7 +90,7 @@ public class Sudoku {
             grid.add(new ArrayList<>());
 
             for (int j = 0; j < SIZE; ++j) {
-                Element elem = new Element(
+                Cell elem = new Cell(
                         vals[i][j],
                         vals[i][j] == 0,
                         rows.get(i), 
