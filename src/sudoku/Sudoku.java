@@ -130,6 +130,10 @@ public class Sudoku {
             }
         }
     }
+    
+    public int numberOfEmptyCells() {
+        return empty.size();
+    }
 
     @Override
     public String toString() {
@@ -163,5 +167,7 @@ public class Sudoku {
 
         Sudoku sdk = new Sudoku(values);
         System.out.println("sdk = " + sdk);
+        System.out.println("number of empty cells = " + 
+                sdk.numberOfEmptyCells());
     }
 }
