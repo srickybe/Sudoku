@@ -42,6 +42,11 @@ public class RouletteWheel extends Selection {
 
     private void computeCumulativeFitnesses() {
         computeFitnesses();
+        
+        if (totalFitness == 0.0) {
+            throw new UnsupportedOperationException();
+        }
+        
         cumulFits[0] = chrs[0].getFitness() / totalFitness;
 
         for (int i = 1; i < chrs.length; ++i) {
