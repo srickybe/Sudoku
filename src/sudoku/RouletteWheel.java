@@ -12,7 +12,7 @@ package sudoku;
 public class RouletteWheel extends Selection {
 
     private Chromosome[] chrs;
-    private double totalFitness;
+    private double sumFits;
     private double[] cumulFits;
     private final Fitness fitness;
 
@@ -29,10 +29,10 @@ public class RouletteWheel extends Selection {
 
     @Override
     public Chromosome select() {
-        double r = Util.randomDouble();
+        double random = Util.randomDouble();
 
         for (int index = 0; index < cumulFits.length; ++index) {
-            if (cumulFits[index] >= r) {
+            if (cumulFits[index] >= random) {
                 return chrs[index];
             }
         }
@@ -43,23 +43,23 @@ public class RouletteWheel extends Selection {
     private void computeCumulativeFitnesses() {
         computeFitnesses();
         
-        if (totalFitness == 0.0) {
+        if (sumFits == 0.0) {
             throw new UnsupportedOperationException();
         }
         
-        cumulFits[0] = chrs[0].getFitness() / totalFitness;
+        cumulFits[0] = chrs[0].getFitness() / sumFits;
 
         for (int i = 1; i < chrs.length; ++i) {
-            cumulFits[i] = cumulFits[i - 1] + chrs[i].getFitness() / totalFitness;
+            cumulFits[i] = cumulFits[i - 1] + chrs[i].getFitness() / sumFits;
         }
     }
 
     private void computeFitnesses() {
-        totalFitness = 0.0;
+        sumFits = 0.0;
 
         for (int i = 0; i < chrs.length; ++i) {
             chrs[i].setFitness(fitness.evaluate(chrs[i]));
-            totalFitness += chrs[i].getFitness();
+            sumFits += chrs[i].getFitness();
         }
     }
 }
