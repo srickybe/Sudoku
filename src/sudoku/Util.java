@@ -5,7 +5,7 @@
  */
 package sudoku;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,39 +13,115 @@ import java.util.Random;
  */
 public class Util {
 
-    private static final Random RANDOM = new Random(0);
+    public static boolean isPerfectSquare(int number) {
+        int sqrt = (int) Math.sqrt(number);
 
-    public static int randomInt(int n) {
-        return RANDOM.nextInt(n);
+        return sqrt * sqrt == number;
+    }
+    
+    public static <T> String printArray(T[] array) {
+        String res = "";
+
+        if (array != null) {
+            if (array.length > 0) {
+                res += "[" + array[0];
+
+                for (int i = 1; i < array.length; ++i) {
+                    res += ", " + array[i];
+                }
+
+                res += "]";
+
+                return res;
+            } else {
+                return "[]";
+            }
+        } else {
+            return null;
+        }
     }
 
-    /*
-    returns an integer with a minimum value equal to min 
-    and maximum value equal to max-1
-     */
-    public static int randomInt(int min, int max) {
-        return min + Util.randomInt(max - min);
+    public static <T> String printArray(T[][] array) {
+        String res = "";
+
+        if (array != null) {
+            if (array.length > 0) {
+                res += "[" + printArray(array[0]);
+
+                for (int i = 1; i < array.length; ++i) {
+                    res += ", " + printArray(array[i]);
+                }
+
+                res += "]";
+
+                return res;
+            } else {
+                return "[]";
+            }
+        } else {
+            return null;
+        }
     }
 
-    public static boolean randomBoolean() {
-        return RANDOM.nextBoolean();
+    public static <T> String printArray(T[][][] array) {
+        String res = "";
+
+        if (array != null) {
+            if (array.length > 0) {
+                res += "[" + printArray(array[0]);
+
+                for (int i = 1; i < array.length; ++i) {
+                    res += ", " + printArray(array[i]);
+                }
+
+                res += "]";
+
+                return res;
+            } else {
+                return "[]";
+            }
+        } else {
+            return null;
+        }
     }
+    
+    public static <T> void shuffle(ArrayList<T> array) {
+        int size = array.size();
 
-    public static boolean[] randomBooleans(int nBases) {
-        boolean[] bases = new boolean[nBases];
-
-        for (int i = 0; i < bases.length; ++i) {
-            bases[i] = randomBoolean();
+        if (size < 2) {
+            return;
         }
 
-        return bases;
-    }
+        for (int i = 0; i < size; ++i) {
+            int choice = Rand.getInstance().nextInt(size);
 
-    public static Double randomDouble() {
-        return RANDOM.nextDouble();
-    }
+            while (choice == i) {
+                choice = Rand.getInstance().nextInt(size);
+            }
 
-    public static boolean mutateBase(boolean base) {
-        return !base;
+            T tmp = array.get(i);
+            array.set(i, array.get(choice));
+            array.set(choice, tmp);
+        }
+    }
+    
+    public static <T> void shuffle(T[] array) {
+        int size = array.length;
+
+        if (size < 2) {
+            return;
+        }
+
+        for (int i = 0; i < size; ++i) {
+            int choice = Rand.getInstance().nextInt(size);
+
+            /*while (choice == i) {
+                choice = Rand.getInstance().nextInt(size);
+            }*/
+
+            T tmp = array[i];
+            array[i] = array[choice];
+            array[choice] = tmp;
+        }
     }
 }

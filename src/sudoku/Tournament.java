@@ -6,33 +6,42 @@
 package sudoku;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
  * @author ricky
  */
-public class Tournament extends Selection {
+public class Tournament extends Selector {
 
-    private ArrayList<Chromosome> chrs;
+    private ArrayList<Chromosome> population;
+    private ArrayList<Chromosome> copy;
     private final int size;
 
     public Tournament(int size) {
-        chrs = null;
+        population = null;
+        copy = null;
         this.size = size;
     }
 
     @Override
     public Chromosome select() {
-        int nChoices = Math.min(size, chrs.size());
-        int choice = Util.randomInt(chrs.size());
-        Chromosome bestFit = chrs.get(choice);
-        Double bestFitness = chrs.get(choice).getFitness();
+        int nChoices = Math.min(size, population.size());
+        int choice = 0;
+
+        try {
+            choice = Rand.getInstance().nextInt(population.size());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+
+        Chromosome bestFit = population.get(choice);
+        Double bestFitness = population.get(choice).getFitness();
 
         for (int j = 1; j < nChoices; ++j) {
-            int index = Util.randomInt(chrs.size());
-            Chromosome chr = chrs.get(index);
-            Double fitness = chrs.get(index).getFitness();
+            int index = Rand.getInstance().nextInt(population.size());
+            Chromosome chr = population.get(index);
+            Double fitness = population.get(index).getFitness();
 
             if (fitness > bestFitness) {
                 bestFitness = fitness;
@@ -41,15 +50,41 @@ public class Tournament extends Selection {
             }
         }
 
-        chrs.remove(choice);
+        population.remove(choice);
+        replete();
 
         return bestFit;
     }
 
     @Override
-    public final void setPopulation(
-            Chromosome[] chrs
-    ) {
-        this.chrs = new ArrayList<>(Arrays.asList(chrs));
+    public final void setPopulation(ArrayList<Chromosome> chromos) {
+        this.population = new ArrayList<>(chromos.size());
+        this.copy = new ArrayList<>(chromos.size());
+
+        chromos.forEach(chromo -> {
+            this.population.add(chromo);
+            this.copy.add(chromo);
+        });
+    }
+
+    private void replete() {
+        if (population.isEmpty()) {
+            this.copy.forEach(chromo -> {
+                this.population.add(chromo);
+            });
+        }
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public String toString() {
+        return "Tournament{"
+                + "population=" + population
+                + ", copy=" + copy
+                + ", size=" + size
+                + '}';
     }
 }

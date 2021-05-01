@@ -5,39 +5,44 @@
  */
 package sudoku;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author ricky
  */
-public class RouletteWheel extends Selection {
+public class RouletteWheel extends Selector {
 
-    private Chromosome[] chrs;
+    private ArrayList<Chromosome> chrs;
+    private ArrayList<Double> fitnesses;
     private double sumFits;
-    private double[] cumulFits;
-    private final Fitness fitness;
+    private ArrayList<Double> cumulFits;
 
-    public RouletteWheel(Fitness fitness) {
-        this.fitness = fitness;
+    public RouletteWheel() {
     }
 
     @Override
-    public void setPopulation(Chromosome[] chrs) {
+    public void setPopulation(ArrayList<Chromosome> chrs) {
+        if (chrs.isEmpty()) {
+            this.chrs = null;
+            throw new UnsupportedOperationException();
+        }
+        
         this.chrs = chrs;
-        this.cumulFits = new double[chrs.length];
+        this.fitnesses = new ArrayList<>(chrs.size());
+        this.cumulFits = new ArrayList<>(chrs.size());
         computeCumulativeFitnesses();
     }
 
     @Override
     public Chromosome select() {
-        double random = Util.randomDouble();
-
-        for (int index = 0; index < cumulFits.length; ++index) {
-            if (cumulFits[index] >= random) {
-                return chrs[index];
+        for (int index = 0; index < cumulFits.size(); ++index) {
+            if (cumulFits.get(index) >= Rand.getInstance().nextDouble()) {
+                return chrs.get(index);
             }
         }
 
-        return chrs[chrs.length - 1];
+        return chrs.get(chrs.size() - 1);
     }
 
     private void computeCumulativeFitnesses() {
@@ -47,19 +52,29 @@ public class RouletteWheel extends Selection {
             throw new UnsupportedOperationException();
         }
         
-        cumulFits[0] = chrs[0].getFitness() / sumFits;
+        cumulFits.add(fitnesses.get(0) / sumFits);
 
-        for (int i = 1; i < chrs.length; ++i) {
-            cumulFits[i] = cumulFits[i - 1] + chrs[i].getFitness() / sumFits;
+        for (int i = 1; i < chrs.size(); ++i) {
+            cumulFits.add(cumulFits.get(i - 1) + fitnesses.get(i) / sumFits);
         }
     }
 
     private void computeFitnesses() {
         sumFits = 0.0;
 
-        for (int i = 0; i < chrs.length; ++i) {
-            chrs[i].setFitness(fitness.evaluate(chrs[i]));
-            sumFits += chrs[i].getFitness();
+        for (int i = 0; i < chrs.size(); ++i) {
+            fitnesses.add(chrs.get(i).getFitness());
+            sumFits += fitnesses.get(i);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "RouletteWheel{" 
+                + "chrs=" + chrs 
+                + ", fitnesses=" + fitnesses 
+                + ", sumFits=" + sumFits 
+                + ", cumulFits=" + cumulFits 
+                + '}';
     }
 }
