@@ -17,9 +17,9 @@ import java.util.TreeSet;
  */
 public class GASolver implements Runnable {
 
-    //private final Grid sdk;
-    private ArrayList<Chromosome> population;
+    private Population population;
     private final int initialPopulationSize;
+    private final int criticalSizeOfReserve;
     private final int maximumNumberOfGenerations;
     private final double crossOverRate;
     private final double mutationRate;
@@ -28,7 +28,7 @@ public class GASolver implements Runnable {
     private Chromosome bestFit;
     private final ArrayList<Chromosome> bestFitByGeneration;
     private final ArrayList<Double> averageFitnesses;
-    private TreeSet<Chromosome> reserve;
+    private Reserve reserve;
     private Selector selector;
     private final String name;
     private int currentGenerationNumber;
@@ -37,7 +37,6 @@ public class GASolver implements Runnable {
     private boolean verbose;
 
     public GASolver(
-            //Grid sdk,
             ArrayList<Chromosome> chrs,
             Selector selector,
             Settings settings,
@@ -45,6 +44,7 @@ public class GASolver implements Runnable {
     ) {
         //this.sdk = sdk;
         this.initialPopulationSize = chrs.size();
+        this.criticalSizeOfReserve = settings.getCriticalSizeOfReserve();
         this.restartThreshold = settings.getRestartThreshold();
         this.bestFitByGeneration = new ArrayList<>(settings.getMaximumNumberOfGenerations());
         this.maximumNumberOfGenerations = settings.getMaximumNumberOfGenerations();
@@ -58,38 +58,40 @@ public class GASolver implements Runnable {
         this.averageFitnesses = new ArrayList<>();
         setPopulation(chrs);
         computeAverageFitness();
-        this.reserve = new TreeSet<>();
+        this.reserve = new Reserve();
         this.stopped = false;
         this.verbose = true;
     }
 
-    public void addNBestFitToReservePopulation() {
-        int numberOfChromosomes = population.size() / getRestartThreshold();
-        addNBestFitFromTo(numberOfChromosomes, population, reserve);
+    public boolean addNBestFitToReservePopulation(int nChrs) {
+        if (nChrs <= 0) {
+            throw new IllegalArgumentException();
+        }
 
-        if (sizeOfReserve() > (int) (5.0 * getInitialPopulationSize())) {
-            if (isVerbose()) {
-                /*System.out.println("###Thread " + name
-                        + ": restartPopulation has a greater size than population");
-                System.out.println("size = " + reservePopulation.size());*/
+        int count = 0;
+
+        for (Chromosome chr : population) {
+            if (reserve.add(chr)) {
+                ++count;
             }
 
-            ArrayList<Chromosome> nBestFit;
-            nBestFit = nBestFit(
-                    getInitialPopulationSize(),
-                    reserve
-            );
-            clearReserve();
-            addToReserve(nBestFit);
-
-            if (isVerbose()) {
-                System.out.println("new size = " + sizeOfReserve());
+            if (count == nChrs) {
+                break;
             }
         }
+
+        if (isVerbose()) {
+            if (count != nChrs) {
+                /*System.out.println("Less than " + nChrs
+                        + " chromosomes added");*/
+            }
+        }
+
+        return count == nChrs;
     }
 
     public int sizeOfReserve() {
-        return reserve.size();
+        return reserve.getNumberOfChromosomes();
     }
 
     public void clearReserve() {
@@ -211,7 +213,7 @@ public class GASolver implements Runnable {
     }
 
     public ArrayList<Chromosome> getPopulation() {
-        return population;
+        return population.toArrayList();
     }
 
     public int getRestartThreshold() {
@@ -235,7 +237,7 @@ public class GASolver implements Runnable {
     }
 
     public final void setPopulation(ArrayList<Chromosome> chrs) {
-        this.population = chrs;
+        this.population = new Population(chrs);
     }
 
     public boolean isLocalMinimum() {
@@ -318,24 +320,29 @@ public class GASolver implements Runnable {
 
     public void restart() {
         clearPopulation();
-        addToPopulation(reserve);
+        setPopulation(reserve.toArrayList());
     }
 
     public void clearPopulation() {
         population.clear();
     }
 
-    public void addToPopulation(Collection<Chromosome> c) {
+    /*public void addToPopulation(Collection<Chromosome> c) {
         population.addAll(c);
-    }
-
+    }*/
     public void retainFractionOfPopulation() {
         if (getSelectionRate() < 1.0) {
             int nChrs = (int) (getInitialPopulationSize() * getSelectionRate());
-            ArrayList<Chromosome> nBestFit = new ArrayList<>(nChrs);
-            addNBestFitFromTo(nChrs, population, nBestFit);
+            ArrayList<Chromosome> nBestFit = getNBestFitFromPopulation(nChrs);
             setPopulation(nBestFit);
         }
+    }
+
+    public ArrayList<Chromosome> getNBestFitFromPopulation(int nChrs) {
+        Pair<ArrayList<Chromosome>, Boolean> res;
+        res = population.getNBestFit(nChrs);
+
+        return res.getFirst();
     }
 
     public double getSelectionRate() {
@@ -352,7 +359,8 @@ public class GASolver implements Runnable {
                     System.out.println("###Thread-" + name
                             + "...generation-" + getCurrentGenerationNumber()
                             + "...best_fitness = " + bestFitness()
-                            + "...average_fitness = " + currentAverageFitness());
+                            + "...average_fitness = " + currentAverageFitness()
+                            + "...reserve size = " + reserve.getNumberOfChromosomes());
                 }
             }
 
@@ -361,7 +369,8 @@ public class GASolver implements Runnable {
                     System.out.println("@@@Thread-" + name
                             + "...generation-" + getCurrentGenerationNumber()
                             + "...RESTARTING"
-                            + "...average_fitness = " + currentAverageFitness());
+                            + "...average_fitness = " + currentAverageFitness()
+                            + "...reserve size = " + sizeOfReserve());
                 }
                 restart();
             }
@@ -370,7 +379,7 @@ public class GASolver implements Runnable {
             computeAverageFitness();
             updateBestFit();
             addToBestFits(getBestFit());
-            addNBestFitToReservePopulation();
+            addNBestFitToReserve();
 
             if (hasSolution()) {
                 //System.out.println("Thread " + name + "\tgeneration " + getCurrentGeneration());
@@ -378,7 +387,7 @@ public class GASolver implements Runnable {
             }
 
             retainFractionOfPopulation();
-            resetSelector(population);
+            resetSelector();
             ArrayList<Chromosome> nextGen = nextGeneration();
 
             if (isVerbose()) {
@@ -391,6 +400,73 @@ public class GASolver implements Runnable {
             computeFitnesses();
             incrementCurrentGeneration();
         }
+    }
+
+    public ArrayList<Chromosome> getNBestFitFromReserve(int nChrs) {
+        Pair<ArrayList<Chromosome>, Boolean> res;
+        res = reserve.getNBestFit(nChrs);
+
+        return res.getFirst();
+    }
+
+    /*
+    population must be sorted in descending order
+     */
+    public boolean addNBestFitFromPopulationToReserve(int nChrs) {
+        if (nChrs <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+        int count = 0;
+
+        for (Chromosome chr : population) {
+            if (reserve.add(chr)) {
+                ++count;
+            }
+
+            if (count == nChrs) {
+                break;
+            }
+        }
+
+        if (isVerbose()) {
+            if (count != nChrs) {
+                /*System.out.println("Less than " + nChrs
+                        + " chromosomes added");*/
+            }
+        }
+
+        return count == nChrs;
+    }
+
+    public void addNBestFitToReserve() {
+        int numberOfChromosomes = populationSize() / getRestartThreshold();
+        addNBestFitFromPopulationToReserve(numberOfChromosomes);
+
+        if (sizeOfReserve() > getCriticalSizeOfReserve()) {
+            if (isVerbose()) {
+                System.out.println("###Thread-" + name
+                        + "...reserve has passed the maximum");
+                System.out.println("...reserve size = " + reserve.getNumberOfChromosomes());
+            }
+
+            ArrayList<Chromosome> nBestFit;
+            nBestFit = getNBestFitFromReserve(getInitialPopulationSize());
+            clearReserve();
+            addToReserve(nBestFit);
+
+            if (isVerbose()) {
+                System.out.println("new size = " + sizeOfReserve());
+            }
+        }
+    }
+
+    public int getCriticalSizeOfReserve() {
+        return criticalSizeOfReserve;
+    }
+
+    public void resetSelector() {
+        selector.setPopulation(population.toArrayList());
     }
 
     public boolean isStopped() {
@@ -422,7 +498,7 @@ public class GASolver implements Runnable {
     }
 
     public void setNextGeneration(ArrayList<Chromosome> children) {
-        this.population = children;
+        this.population = new Population(children);
     }
 
     public void setSelector(Selector selector) {
@@ -434,16 +510,11 @@ public class GASolver implements Runnable {
     }
 
     public void shufflePopulation() {
-        for (int i = 0; i < population.size(); ++i) {
-            int j = Rand.getInstance().nextInt(population.size());
-            Chromosome tmp = population.get(i);
-            population.set(i, population.get(j));
-            population.set(j, tmp);
-        }
+        population.shuffle();
     }
 
     public void sortPopulation() {
-        Collections.sort(population, Collections.reverseOrder());
+        population.sortInDescendingOrder();
     }
 
     public void stop() {
@@ -475,7 +546,7 @@ public class GASolver implements Runnable {
             }
         } else {
             if (!population.isEmpty()) {
-                setBestFit(population.get(0));
+                setBestFit(population.first());
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -491,7 +562,7 @@ public class GASolver implements Runnable {
         ArrayList<Integer> noSolutionSeeds = new ArrayList<>();
         Settings settings = new Settings(pathName);
         System.out.println("settings = " + settings);
-        int nSeeds = 1;
+        int nSeeds = 3;
         Sudoku sdk = new Sudoku(settings.getGridPath());
         System.out.println("initial grid =\n" + sdk.printGrid());
         System.out.println("initial fitness = " + sdk.getFitness());
@@ -504,7 +575,7 @@ public class GASolver implements Runnable {
         Thread[] threads = new Thread[nThreads];
         GASolver[] solvers = new GASolver[nThreads];
 
-        for (int i = 0; i < nSeeds; ++i) {
+        for (int i = 2; i < nSeeds; ++i) {
             System.out.println("*****************************seed = " + i);
             Rand.getInstance().setSeed(i);
             System.out.println("Rand.getInstance().getSeed() = "
