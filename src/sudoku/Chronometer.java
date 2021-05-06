@@ -18,36 +18,25 @@ public class Chronometer implements Runnable {
     private final long start;
     private double elapsed;
     private final long sleepTime;
-    private boolean exit;
+    private boolean stopped;
 
     public Chronometer(long sleepTime) {
         start = System.currentTimeMillis();
         elapsed = 0;
         this.sleepTime = sleepTime;
-        exit = true;
+        stopped = false;
     }
 
     //https://ejrh.wordpress.com/2012/07/13/sleeping-in-loops-considered-harmful/
     @Override
     public void run() {
-        /*while (true) {
-            elapsed = (double) (System.currentTimeMillis() - start) / 1000.0;
-            System.out.println("elapsed time = " + elapsed);
-
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
-            }
-        }*/
-
         final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
         Runnable command = () -> {
             elapsed = (double) (System.currentTimeMillis() - start) / 1000.0;
             System.err.println("elapsed time = " + elapsed);
 
-            if (!exit) {
+            if (stopped) {
                 service.shutdown();
             }
         };
@@ -55,8 +44,8 @@ public class Chronometer implements Runnable {
         service.scheduleAtFixedRate(command, 0, sleepTime, TimeUnit.MILLISECONDS);
     }
 
-    public void stop() {
-        exit = true;
+    public void setStopped(boolean isStopped) {
+        stopped = isStopped;
     }
 
     public static void main(String[] args) {
