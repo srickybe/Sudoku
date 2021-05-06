@@ -1,21 +1,295 @@
 number_of_threads               1
 random_seed                     0
-path_of_sudoku_grid             C:\Users\Ricky\Documents\NetBeansProjects\Sudoku\src\sudoku\sudoku5.txt
+path_of_sudoku_grid             /home/john/NetBeansProjects/Sudoku/src/sudoku/sudoku1.txt
 population_size                 1500
+critical_size_of_reserve        7500
+maximum_number_of_generations   1500
+restart_threshold               20
+cross_over_rate                 0.10
+mutation_rate                   0.0125
+selection_rate                  0.5
+chromosome_selection            Tournament      7
+chromosome_selection            RouletteWheel
+chromosome_selection            Tournament      7
+chromosome_selection            Tournament      7
+chromosome_selection            Tournament      5
+chromosome_selection            Tournament      5
+chromosome_selection            Tournament      5
+chromosome_selection            RouletteWheel
+chromosome_selection            RouletteWheel
+chromosome_selection            RouletteWheel
+chromosome_selection            RouletteWheel
+chromosome_selection            RouletteWheel
+chromosome_selection            RouletteWheel
+
+********************************************************************************
+Testing parameters with GASolver.main with verbose = true
+********************************************************************************
+number_of_threads               1
+random_seed                     2
+path_of_sudoku_grid             /home/ricky/NetBeansProjects/Sudoku2/src/sdk/sudoku1.txt
+population_size                 1500
+critical_size_of_reserve        7500
 maximum_number_of_generations   10000
-restart_threshold               50
+restart_threshold               20
 cross_over_rate                 0,10
 mutation_rate                   0,0125
 selection_rate                  0,5
 chromosome_selection            Tournament      7
-chromosome_selection            Tournament      7
-chromosome_selection            Tournament      7
-chromosome_selection            Tournament      5
-chromosome_selection            Tournament      5
-chromosome_selection            Tournament      5
-chromosome_selection            RouletteWheel
-chromosome_selection            RouletteWheel
-chromosome_selection            RouletteWheel
-chromosome_selection            RouletteWheel
-chromosome_selection            RouletteWheel
-chromosome_selection            RouletteWheel
+********************************************************************************
+Testing result
+********************************************************************************
+ant -f /home/john/NetBeansProjects/Sudoku -Dnb.internal.action.name=run.single -Djavac.includes=sudoku/GASolver.java -Drun.class=sudoku.GASolver run-single
+init:
+Deleting: /home/john/NetBeansProjects/Sudoku/build/built-jar.properties
+deps-jar:
+Updating property file: /home/john/NetBeansProjects/Sudoku/build/built-jar.properties
+Compiling 1 source file to /home/john/NetBeansProjects/Sudoku/build/classes
+compile-single:
+run-single:
+Test
+elapsed time = 0.065
+settings = Settings{gridPath=/home/john/NetBeansProjects/Sudoku/src/sudoku/sudoku1.txt,
+solverSettingsPath=/home/john/NetBeansProjects/Sudoku/src/sudoku/settings_test.txt,
+populationSize=1500,
+maximumNumberOfGenerations=1500,
+crossOverRate=0.1,
+mutationRate=0.0125,
+selectionRate=0.5,
+selection=[Tournament{population=null, copy=null, size=7}]}
+initial grid =
+- 1 4    2 3 5    - 8 -    
+7 - 3    1 8 -    4 - 2    
+2 8 -    4 7 -    - - 3    
+
+- 4 -    6 1 2    - 7 -    
+- 2 -    - - -    - - -    
+- 7 -    3 9 8    - 2 4    
+
+4 - -    8 6 -    2 - 9    
+- - 2    - - -    8 - -    
+- 6 -    9 2 1    - 4 -    
+
+
+initial fitness = 82.0
+*****************************seed = 2
+Rand.getInstance().getSeed() = 2
+###Thread-0...generation-0...best_fitness = null...average_fitness = 132.87933333333334...reserve size = 0
+Thread-0: gen = 0...bestFitness = 146.0...average fitness = 132.87933333333334
+...bestFit =
+9 1 4    2 3 5    5 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 9 3    
+
+5 4 9    6 1 2    3 7 8    
+6 2 3    7 4 5    1 5 6    
+8 7 1    3 9 8    9 2 4    
+
+4 9 5    8 6 3    2 1 9    
+3 1 2    7 5 4    8 3 6    
+7 6 8    9 2 1    7 4 5    
+
+
+Thread-0: gen = 3...bestFitness = 147.0...average fitness = 138.534
+...bestFit =
+9 1 4    2 3 5    7 8 1    
+7 5 3    1 8 6    4 9 2    
+2 8 6    4 7 9    6 5 3    
+
+8 4 5    6 1 2    3 7 5    
+3 2 9    5 7 4    8 6 1    
+6 7 1    3 9 8    9 2 4    
+
+4 7 5    8 6 3    2 3 9    
+1 3 2    7 4 5    8 1 6    
+8 6 9    9 2 1    5 4 7    
+
+
+Thread-0: gen = 5...bestFitness = 148.0...average fitness = 140.59266666666667
+...bestFit =
+9 1 4    2 3 5    5 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 9 3    
+
+5 4 9    6 1 2    3 7 8    
+6 2 3    7 4 5    6 5 1    
+8 7 1    3 9 8    9 2 4    
+
+4 9 5    8 6 3    2 1 9    
+3 1 2    7 5 4    8 3 6    
+7 6 8    9 2 1    7 4 5    
+
+
+Thread-0: gen = 7...bestFitness = 149.0...average fitness = 142.268
+...bestFit =
+9 1 4    2 3 5    5 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 9 3    
+
+8 4 5    6 1 2    3 7 5    
+3 2 9    5 4 7    6 1 8    
+6 7 1    3 9 8    9 2 4    
+
+4 9 5    8 6 3    2 1 9    
+3 1 2    7 5 4    8 3 6    
+7 6 8    9 2 1    7 4 5    
+
+
+Thread-0: gen = 9...bestFitness = 150.0...average fitness = 143.95066666666668
+...bestFit =
+9 1 4    2 3 5    7 8 1    
+7 5 3    1 8 6    4 9 2    
+2 8 6    4 7 9    6 5 3    
+
+8 4 5    6 1 2    3 7 9    
+3 2 9    7 5 4    8 6 1    
+6 7 1    3 9 8    5 2 4    
+
+4 3 5    8 6 7    2 3 9    
+8 9 2    5 4 3    8 1 6    
+1 6 7    9 2 1    5 4 7    
+
+
+Thread-0: gen = 11...bestFitness = 151.0...average fitness = 145.42666666666668
+...bestFit =
+9 1 4    2 3 5    5 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 9 3    
+
+8 4 5    6 1 2    3 7 5    
+3 2 9    5 4 7    6 1 8    
+6 7 1    3 9 8    9 2 4    
+
+4 7 5    8 6 3    2 1 9    
+1 3 2    7 5 4    8 3 6    
+9 6 8    9 2 1    7 4 5    
+
+
+Thread-0: gen = 12...bestFitness = 152.0...average fitness = 146.07133333333334
+...bestFit =
+9 1 4    2 3 5    5 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 9 3    
+
+5 4 9    6 1 2    3 7 8    
+6 2 3    7 4 5    6 9 1    
+8 7 1    3 9 8    5 2 4    
+
+4 7 5    8 6 3    2 1 9    
+1 9 2    7 5 4    8 3 6    
+3 6 8    9 2 1    7 4 5    
+
+
+Thread-0: gen = 15...bestFitness = 153.0...average fitness = 147.456
+...bestFit =
+9 1 4    2 3 5    5 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 9 3    
+
+5 4 9    6 1 2    3 7 8    
+3 2 8    7 4 5    6 9 1    
+6 7 1    3 9 8    5 2 4    
+
+4 7 5    8 6 3    2 1 9    
+1 9 2    7 5 4    8 3 6    
+3 6 8    9 2 1    7 4 5    
+
+
+Thread-0: gen = 19...bestFitness = 154.0...average fitness = 149.44533333333334
+...bestFit =
+9 1 4    2 3 5    5 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 9 3    
+
+5 4 9    6 1 2    3 7 8    
+8 2 3    7 4 5    6 9 1    
+6 7 1    3 9 8    5 2 4    
+
+4 7 5    8 6 3    2 1 9    
+1 9 2    7 5 4    8 3 6    
+3 6 8    9 2 1    7 4 5    
+
+
+Thread-0: gen = 21...bestFitness = 156.0...average fitness = 150.35266666666666
+...bestFit =
+9 1 4    2 3 5    5 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 9 3    
+
+5 4 9    6 1 2    3 7 8    
+8 2 3    5 4 7    6 9 1    
+6 7 1    3 9 8    5 2 4    
+
+4 7 5    8 6 3    2 1 9    
+1 9 2    7 5 4    8 3 6    
+3 6 8    9 2 1    7 4 5    
+
+
+Thread-0: gen = 30...bestFitness = 158.0...average fitness = 153.71866666666668
+...bestFit =
+9 1 4    2 3 5    9 8 7    
+7 5 3    1 8 9    4 6 2    
+2 8 6    4 7 6    1 5 3    
+
+5 4 9    6 1 2    3 7 8    
+8 2 3    5 4 7    6 9 1    
+6 7 1    3 9 8    5 2 4    
+
+4 7 5    8 6 3    2 1 9    
+1 9 2    7 5 4    8 3 6    
+3 6 8    9 2 1    7 4 5    
+
+
+@@@Thread-0...generation-50...RESTARTING...average_fitness = 157.36933333333334...reserve size = 3421
+Thread-0: gen = 51...bestFitness = 160.0...average fitness = 154.21733333333333
+...bestFit =
+9 1 4    2 3 5    6 8 7    
+7 5 3    1 8 6    4 9 2    
+2 8 6    4 7 9    1 5 3    
+
+5 4 9    6 1 2    3 7 8    
+3 2 8    5 4 7    9 6 1    
+6 7 1    3 9 8    5 2 4    
+
+4 3 7    8 6 3    2 1 9    
+1 9 2    7 5 4    8 3 6    
+8 6 5    9 2 1    7 4 5    
+
+
+@@@Thread-0...generation-71...RESTARTING...average_fitness = 159.32533333333333...reserve size = 4856
+@@@Thread-0...generation-91...RESTARTING...average_fitness = 159.25266666666667...reserve size = 5958
+@@@Thread-0...generation-111...RESTARTING...average_fitness = 159.324...reserve size = 6963
+###Thread-0...reserve has passed the maximum
+...reserve size = 7563
+new size = 1500
+elapsed time = 5.05
+@@@Thread-0...generation-131...RESTARTING...average_fitness = 159.38066666666666...reserve size = 2037
+@@@Thread-0...generation-151...RESTARTING...average_fitness = 159.26066666666668...reserve size = 3071
+@@@Thread-0...generation-171...RESTARTING...average_fitness = 159.32666666666665...reserve size = 4157
+@@@Thread-0...generation-191...RESTARTING...average_fitness = 159.32333333333332...reserve size = 5260
+###Thread-0...generation-200...best_fitness = 160.0...average_fitness = 158.924...reserve size = 5860
+@@@Thread-0...generation-211...RESTARTING...average_fitness = 159.29133333333334...reserve size = 6416
+@@@Thread-0...generation-231...RESTARTING...average_fitness = 159.30733333333333...reserve size = 7480
+###Thread-0...reserve has passed the maximum
+...reserve size = 7555
+new size = 1500
+@@@Thread-0...generation-251...RESTARTING...average_fitness = 159.316...reserve size = 2563
+solution found
+soludion =
+9 1 4    2 3 5    7 8 6    
+7 5 3    1 8 6    4 9 2    
+2 8 6    4 7 9    1 5 3    
+
+3 4 9    6 1 2    5 7 8    
+6 2 8    7 5 4    9 3 1    
+5 7 1    3 9 8    6 2 4    
+
+4 3 5    8 6 7    2 1 9    
+1 9 2    5 4 3    8 6 7    
+8 6 7    9 2 1    3 4 5    
+
+
+seeds that have a solution
+seed-2
+seeds that don't have a solution
+BUILD SUCCESSFUL (total time: 12 seconds)

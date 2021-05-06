@@ -518,9 +518,9 @@ public class GASolver implements Runnable {
                 threads[k].start();
             }
 
-            String threadName = "";
+            String threadName;
             Chromosome bestFit = null;
-            double bestFitness = 0;
+            double bestFitness;
             boolean on = true;
 
             while (on) {

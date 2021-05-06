@@ -897,7 +897,7 @@ public class Sudoku implements Chromosome {
         //test("/home/john/NetBeansProjects/Sudoku1/src/sudoku1/sudoku1.txt");
 
         String settingPathName
-                = "/home/ricky/NetBeansProjects/Sudoku2/src/sdk/settings.txt";
+                = "/home/john/NetBeansProjects/Sudoku/src/sudoku/settings.txt";
         Settings settings = new Settings(settingPathName);
         Rand.getInstance().setSeed(settings.getSeed());
         Sudoku sdk = new Sudoku(settings.getGridPath());
@@ -908,7 +908,7 @@ public class Sudoku implements Chromosome {
         Thread chrono = new Thread(new Chronometer(10000));
         chrono.start();
         int nThreads = settings.getNumberOfThreads();
-        Solver[] solvers = new Solver[nThreads];
+        GASolver[] solvers = new GASolver[nThreads];
         Thread[] threads = new Thread[nThreads];
 
         for (int i = 0; i < threads.length; ++i) {
@@ -935,7 +935,7 @@ public class Sudoku implements Chromosome {
             }
 
             //System.out.println("min = " + min);
-            solvers[i] = new Solver(
+            solvers[i] = new GASolver(
                     //sdk,
                     chrs,
                     settings.getSelector(i),
@@ -961,7 +961,7 @@ public class Sudoku implements Chromosome {
                     /*if (!solution.sameValuesAtGivens(sdk)) {
                         throw new UnsupportedOperationException("!solution.sameGivens(sdk)");
                     }*/
-                    System.out.println("Solver" + i);
+                    System.out.println("GASolver" + i);
                     System.out.println("Generation" + solvers[i].getCurrentGenerationNumber());
                     System.out.println("solution =\n" + solution.printGrid());
                     System.out.println("solution fitness = " + solution.getFitness());

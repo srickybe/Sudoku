@@ -1,22 +1,23 @@
-number_of_threads               6
+number_of_threads               1
 random_seed                     0
-path_of_sudoku_grid             /home/ricky/NetBeansProjects/Sudoku2/src/sdk/sudoku5.txt
-population_size                 5000
+path_of_sudoku_grid             /home/john/NetBeansProjects/Sudoku/src/sudoku/sudoku1.txt
+population_size                 1500
+critical_size_of_reserve        7500
 maximum_number_of_generations   10000
 restart_threshold               20
-cross_over_rate                 0,10
-mutation_rate                   0,01250
-selection_rate                  0,5
+cross_over_rate                 0.10
+mutation_rate                   0.01250
+selection_rate                  0.5
+chromosome_selection            Tournament      7
+chromosome_selection            Tournament      7
+chromosome_selection            Tournament      7
+chromosome_selection            Tournament      3
+chromosome_selection            Tournament      3
+chromosome_selection            Tournament      5
+chromosome_selection            Tournament      5
+chromosome_selection            Tournament      5
 chromosome_selection            RouletteWheel
 chromosome_selection            RouletteWheel
-chromosome_selection            Tournament      3
-chromosome_selection            Tournament      3
-chromosome_selection            Tournament      3
-chromosome_selection            Tournament      3
-chromosome_selection            Tournament      3
-chromosome_selection            Tournament      5
-chromosome_selection            Tournament      5
-chromosome_selection            Tournament      5
 chromosome_selection            RouletteWheel 
 chromosome_selection            RouletteWheel 
 chromosome_selection            RouletteWheel 
