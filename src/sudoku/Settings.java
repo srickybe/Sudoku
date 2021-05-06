@@ -20,6 +20,7 @@ public class Settings {
     private int numberOfThreads;
     private long seed;
     private int populationSize;
+    private int criticalSizeOfReserve;
     private int maximumNumberOfGenerations;
     private int restartThreshold;
     private double crossOverRate;
@@ -61,6 +62,13 @@ public class Settings {
         }
         
         populationSize = scanner.nextInt();
+        tmp = scanner.next();
+        
+        if (!tmp.equals("critical_size_of_reserve")) {
+            throw new IllegalArgumentException();
+        }
+        
+        criticalSizeOfReserve = scanner.nextInt();
         tmp = scanner.next();
         
         if (!tmp.equals("maximum_number_of_generations")) {
@@ -177,6 +185,10 @@ public class Settings {
     public Selector getSelector(int i) {
         return this.selections.get(i);
     } 
+
+    public int getCriticalSizeOfReserve() {
+        return criticalSizeOfReserve;
+    }
 
     @Override
     public String toString() {
