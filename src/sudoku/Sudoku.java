@@ -8,6 +8,7 @@ package sudoku;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -90,6 +91,37 @@ public class Sudoku implements Chromosome {
         simplifyGrid();
         missing = missingValuesInBlocks();
         computeFitness();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Arrays.deepHashCode(this.grid);
+        
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        
+        if (obj == null) {
+            return false;
+        }
+        
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        final Sudoku other = (Sudoku) obj;
+        
+        if (!Arrays.deepEquals(this.grid, other.grid)) {
+            return false;
+        }
+        
+        return true;
     }
 
     public final Byte[][] emptyGrid(byte length) {
@@ -876,7 +908,7 @@ public class Sudoku implements Chromosome {
         Thread chrono = new Thread(new Chronometer(10000));
         chrono.start();
         int nThreads = settings.getNumberOfThreads();
-        GASolver[] solvers = new GASolver[nThreads];
+        Solver[] solvers = new Solver[nThreads];
         Thread[] threads = new Thread[nThreads];
 
         for (int i = 0; i < threads.length; ++i) {
@@ -903,7 +935,7 @@ public class Sudoku implements Chromosome {
             }
 
             //System.out.println("min = " + min);
-            solvers[i] = new GASolver(
+            solvers[i] = new Solver(
                     //sdk,
                     chrs,
                     settings.getSelector(i),
@@ -929,7 +961,7 @@ public class Sudoku implements Chromosome {
                     /*if (!solution.sameValuesAtGivens(sdk)) {
                         throw new UnsupportedOperationException("!solution.sameGivens(sdk)");
                     }*/
-                    System.out.println("GASolver" + i);
+                    System.out.println("Solver" + i);
                     System.out.println("Generation" + solvers[i].getCurrentGenerationNumber());
                     System.out.println("solution =\n" + solution.printGrid());
                     System.out.println("solution fitness = " + solution.getFitness());
