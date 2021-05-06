@@ -14,9 +14,8 @@ import java.util.TreeSet;
 /**
  *
  * @author ricky
- * @param <T>
  */
-public class GASolver<T>implements Runnable {
+public class GASolver implements Runnable {
 
     //private final Grid sdk;
     private ArrayList<Chromosome> population;
@@ -534,7 +533,7 @@ public class GASolver<T>implements Runnable {
                         new Settings(pathName),
                         Integer.toString(j)
                 );
-                solvers[j].setVerbose(false);
+                solvers[j].setVerbose(true);
                 //solvers[j].setSelector(settings.getSelection()[j]);
                 threads[j] = new Thread(solvers[j]);
             }
@@ -623,11 +622,11 @@ public class GASolver<T>implements Runnable {
             System.out.println("seed-" + i);
         });
 
-        chrono.stop();
+        chrono.setStopped(true);
         System.exit(0);
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        test("C:\\Users\\Ricky\\Documents\\NetBeansProjects\\Sudoku\\src\\sudoku\\settings_test.txt");
+        test("/home/john/NetBeansProjects/Sudoku/src/sudoku/settings_test.txt");
     }
 }
